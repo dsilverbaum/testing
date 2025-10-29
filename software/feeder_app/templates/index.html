@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="card">
+    <h2>Lisää uusi ajastus</h2>
+    <form method="post" action="{{ url_for('add_schedule') }}">
+      <label>Nimi
+        <input type="text" name="label" placeholder="Aamuruokinta" required />
+      </label>
+      <label>Kellonaika
+        <input type="time" name="time" required />
+      </label>
+      <label>Vapautuksen kesto (s)
+        <input type="number" name="pulse" min="0.5" max="10" step="0.1" value="{{ config.default_release_seconds }}" />
+      </label>
+      <div class="days">
+        {% for value, label in days %}
+          <label><input type="checkbox" name="days" value="{{ value }}" /> {{ label }}</label>
+        {% endfor %}
+      </div>
+      <p>Jos et valitse viikonpäiviä, ajastus toistuu joka päivä.</p>
+      <button class="btn btn-primary" type="submit">Tallenna</button>
+    </form>
+  </div>
+
+  <div class="card">
+    <h2>Ajastukset</h2>
+    {% if schedules %}
+      <table>
+        <thead>
+          <tr>
+            <th>Nimi</th>
+            <th>Aika</th>
+            <th>Päivät</th>
+            <th>Kesto</th>
+            <th>Viimeisin suoritus</th>
+            <th>Toiminnot</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for schedule in schedules %}
+            <tr>
+              <td>{{ schedule.label }}</td>
+              <td>{{ schedule.time_display }}</td>
+              <td>{{ schedule.days }}</td>
+              <td>{{ '%.1f'|format(schedule.pulse_seconds) }} s</td>
+              <td>{{ schedule.last_run or 'Ei vielä' }}</td>
+              <td>
+                <form class="inline" method="post" action="{{ url_for('toggle_schedule', schedule_id=schedule.id) }}">
+                  <input type="hidden" name="active" value="{{ 0 if schedule.active else 1 }}" />
+                  <button class="btn btn-secondary" type="submit">{{ 'Poista käytöstä' if schedule.active else 'Ota käyttöön' }}</button>
+                </form>
+                <form class="inline" method="post" action="{{ url_for('delete_schedule', schedule_id=schedule.id) }}" onsubmit="return confirm('Poistetaanko ajastus?');">
+                  <button class="btn btn-danger" type="submit">Poista</button>
+                </form>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p>Ei ajastuksia vielä.</p>
+    {% endif %}
+  </div>
+
+  <div class="card">
+    <h2>Manuaalinen vapautus</h2>
+    <form method="post" action="{{ url_for('manual_release') }}">
+      <label>Vapautuksen kesto (s)
+        <input type="number" name="pulse" min="0.5" max="10" step="0.1" value="{{ config.default_release_seconds }}" />
+      </label>
+      <button class="btn btn-primary" type="submit">Suorita vapautus</button>
+    </form>
+  </div>
+{% endblock %}
