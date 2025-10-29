@@ -1,0 +1,19 @@
+[Unit]
+Description=Levyautomaatin ohjauspalvelu
+After=network.target
+Requires=hostapd.service dnsmasq.service
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi/feeder
+Environment="FEEDER_DATABASE_PATH=/home/pi/feeder/data/feeder.db"
+Environment="FEEDER_GPIO_MODE=relay"
+Environment="FEEDER_RELEASE_PIN=18"
+Environment="FEEDER_LIMIT_SWITCH_PIN=23"
+ExecStart=/home/pi/feeder/venv/bin/python -m feeder_app.main
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

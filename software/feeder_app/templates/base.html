@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="fi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Levyautomaatin ohjaus</title>
+    <style>
+      body { font-family: Arial, sans-serif; margin: 2rem; background: #f5f5f5; }
+      header { margin-bottom: 2rem; }
+      .card { background: white; padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+      .btn { display: inline-block; padding: 0.5rem 1rem; border-radius: 4px; text-decoration: none; border: none; cursor: pointer; }
+      .btn-primary { background: #007bff; color: white; }
+      .btn-danger { background: #dc3545; color: white; }
+      .btn-secondary { background: #6c757d; color: white; }
+      table { width: 100%; border-collapse: collapse; }
+      th, td { padding: 0.5rem; text-align: left; border-bottom: 1px solid #ddd; }
+      form.inline { display: inline; }
+      .flash { padding: 0.75rem; border-radius: 4px; margin-bottom: 1rem; }
+      .flash-success { background: #d1e7dd; color: #0f5132; }
+      .flash-error { background: #f8d7da; color: #842029; }
+      label { display: block; margin-top: 0.5rem; }
+      input, select { width: 100%; padding: 0.5rem; margin-top: 0.25rem; }
+      .days { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+      .days label { display: flex; align-items: center; gap: 0.25rem; margin: 0; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Levyautomaatin ohjaus</h1>
+      <p>Yhteys: LevyFeeder hotspot • Oletusosoite <code>http://192.168.20.1:8080</code></p>
+    </header>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash flash-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </body>
+</html>
